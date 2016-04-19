@@ -1241,6 +1241,11 @@ ngx_http_spliturl_ruleset(ngx_pool_t *pool,
       name.data = (unsigned char *) str;
       name.len = eq - str - 1;
     }
+
+    naxsi__debug_whitelist("CHRIS: name.len: [%V]", name.len);
+    naxsi__debug_whitelist("CHRIS: name.data: [%V]", name.data);
+    naxsi__debug_whitelist("CHRIS: val.len [%V]", val.len);
+    naxsi__debug_whitelist("CHRIS: val.data[%V]", val.data);
     if (name.len) {
       nullbytes = naxsi_unescape(&name);
       if (nullbytes > 0) {
