@@ -283,6 +283,9 @@ ngx_http_dummy_is_whitelist_adapted(ngx_http_whitelist_rule_t *b,
     zone = BODY;
   naxsi__debug_whitelist("Possible whitelist ... check...");
 
+  naxsi__debug_whitelist("CHRIS: b->target_name: [%V]", b->target_name);
+  naxsi__debug_whitelist("CHRIS: target_name: [%V]", target_name);
+
   /* if whitelist targets arg name, but the rules hit content*/
   if (b->target_name && !target_name)
     {
