@@ -296,7 +296,7 @@ ngx_http_dummy_is_whitelist_adapted(ngx_http_whitelist_rule_t *b,
   /* if if the whitelist target contents, but the rule hit arg name*/
   if (!b->target_name && target_name)
     {
-      naxsi__debug_whitelist("whitelist targets content, but rule matched name.");
+      naxsi__debug_whitelist("CHRIS' SANITY CHECK: whitelist targets content, but rule matched name.");
       return (0);
     }
 
