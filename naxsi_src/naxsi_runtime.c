@@ -1250,6 +1250,7 @@ ngx_http_spliturl_ruleset(ngx_pool_t *pool,
     if (name.len) {
       nullbytes = naxsi_unescape(&name);
       if (nullbytes > 0) {
+        naxsi__debug_whitelist("CHRIS 1");
 	ngx_http_apply_rulematch_v_n(&nx_int__uncommon_hex_encoding, ctx, req, &name, &val, zone, 1, 1);
       }
     }
@@ -1314,6 +1315,7 @@ void ngx_http_libinjection(ngx_pool_t *pool,
     libinjection_sqli_init(&state, (const char *)name->data, name->len, FLAG_NONE);
     issqli = libinjection_is_sqli(&state);
     if (issqli == 1) { 
+      naxsi__debug_whitelist("CHRIS 2");
       ngx_http_apply_rulematch_v_n(nx_int__libinject_sql, ctx, req, name, value, zone, 1, 1);
     }
     
@@ -1329,6 +1331,7 @@ void ngx_http_libinjection(ngx_pool_t *pool,
     /* first on var_name */
     issqli = libinjection_xss((const char *) name->data, name->len);
     if (issqli == 1) {
+      naxsi__debug_whitelist("CHRIS 3");
       ngx_http_apply_rulematch_v_n(nx_int__libinject_xss, ctx, req, name, value, zone, 1, 1);
     }
     
@@ -1414,7 +1417,8 @@ ngx_http_basestr_ruleset_n(ngx_pool_t *pool,
 	      NX_DEBUG(_debug_basestr_ruleset, 	      NGX_LOG_DEBUG_HTTP, req->connection->log, 0, 
 			    "XX-apply rulematch[in name] [%V]=[%V] [rule=%d] (match %d times)", name, value, r[i].rule_id, nb_match); 
 
-	      ngx_http_apply_rulematch_v_n(&(r[i]), ctx, req, name, name, zone, nb_match, 1);
+	      naxsi__debug_whitelist("CHRIS 4");
+              ngx_http_apply_rulematch_v_n(&(r[i]), ctx, req, name, name, zone, nb_match, 1);
 	    }
 	  }
 	  
