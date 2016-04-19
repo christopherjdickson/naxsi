@@ -631,6 +631,7 @@ ngx_http_dummy_is_rule_whitelisted_n(ngx_http_request_t *req,
     naxsi__debug_whitelist("hashing varname [%V] (rule:%d) - 'wl:X_VAR:%V'", name, r->rule_id, name);
     /* try to find in hashtables */
     b = nx_find_wl_in_hash(name, cf, zone);
+    naxsi__debug_whitelist("CHRIS 7");
     if (b && ngx_http_dummy_is_whitelist_adapted(b, name, zone, r, req, NAME_ONLY, target_name))
       return (1);
     /*prefix hash with '#', to find whitelists that would be done only on ARGS_VAR:X|NAME */
@@ -643,6 +644,7 @@ ngx_http_dummy_is_rule_whitelisted_n(ngx_http_request_t *req,
     b = nx_find_wl_in_hash(&tmp_hashname, cf, zone);
     ngx_pfree(req->pool, tmp_hashname.data);
     tmp_hashname.data = NULL;
+    naxsi__debug_whitelist("CHRIS 8");
     if (b && ngx_http_dummy_is_whitelist_adapted(b, name, zone, r, req, NAME_ONLY, target_name))
       return (1);
   }
@@ -665,6 +667,7 @@ ngx_http_dummy_is_rule_whitelisted_n(ngx_http_request_t *req,
 						   tmp_hashname.len);
     ngx_pfree(req->pool, tmp_hashname.data);
     tmp_hashname.data = NULL;
+    naxsi__debug_whitelist("CHRIS 9");
     if (b && ngx_http_dummy_is_whitelist_adapted(b, name, zone, r, req, URI_ONLY, target_name))
       return (1);
   }
@@ -679,6 +682,7 @@ ngx_http_dummy_is_rule_whitelisted_n(ngx_http_request_t *req,
   b = nx_find_wl_in_hash(&(tmp_hashname), cf, zone);
   ngx_pfree(req->pool, tmp_hashname.data);
   tmp_hashname.data = NULL;
+  naxsi__debug_whitelist("CHRIS 10");
   if (b && ngx_http_dummy_is_whitelist_adapted(b, name, zone, r, req, URI_ONLY, target_name))
     return (1);
   
@@ -693,6 +697,7 @@ ngx_http_dummy_is_rule_whitelisted_n(ngx_http_request_t *req,
   b = nx_find_wl_in_hash(&(tmp_hashname), cf, zone);
   ngx_pfree(req->pool, tmp_hashname.data);
   tmp_hashname.data = NULL;
+  naxsi__debug_whitelist("CHRIS 11");
   if (b && ngx_http_dummy_is_whitelist_adapted(b, name, zone, r, req, URI_ONLY, target_name))
     return (1);
   
@@ -712,6 +717,7 @@ ngx_http_dummy_is_rule_whitelisted_n(ngx_http_request_t *req,
   b = nx_find_wl_in_hash(&(tmp_hashname), cf, zone);
   ngx_pfree(req->pool, tmp_hashname.data);
   
+  naxsi__debug_whitelist("CHRIS 12");
   if (b && ngx_http_dummy_is_whitelist_adapted(b, name, zone, r, req, MIXED, target_name))
     return (1);
   
