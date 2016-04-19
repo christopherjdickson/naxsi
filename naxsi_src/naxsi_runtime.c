@@ -283,9 +283,9 @@ ngx_http_dummy_is_whitelist_adapted(ngx_http_whitelist_rule_t *b,
     zone = BODY;
   naxsi__debug_whitelist("Possible whitelist ... check...");
 
-  NX_DEBUG(wl_debug_rx, NGX_LOG_DEBUG_HTTP, req->connection->log, 0, "CHRIS!!! b->target_name: %V, target_name: %V", 
-		b->target_name,
-		target_name);
+  NX_DEBUG(wl_debug_rx, NGX_LOG_DEBUG_HTTP, req->connection->log, 0, "CHRIS!!!"); // b->target_name: %V, target_name: %V", 
+		//b->target_name,
+		//target_name);
 
   /* if whitelist targets arg name, but the rules hit content*/
   if (b->target_name && !target_name)
@@ -1243,10 +1243,10 @@ ngx_http_spliturl_ruleset(ngx_pool_t *pool,
       name.len = eq - str - 1;
     }
 
-    NX_DEBUG(wl_debug_rx, NGX_LOG_DEBUG_HTTP, req->connection->log, 0, "CHRIS!!! name.len: %zu, name.data: %V ", 
-		name.len, name.data);
-    NX_DEBUG(wl_debug_rx, NGX_LOG_DEBUG_HTTP, req->connection->log, 0, "CHRIS!!! value.len: %zu, value.data: %V ", 
-		value.len, value.data);
+    NX_DEBUG(wl_debug_rx, NGX_LOG_DEBUG_HTTP, req->connection->log, 0, "CHRIS!!!"); // name.len: %zu, name.data: %V ", 
+		//name.len, name.data);
+    NX_DEBUG(wl_debug_rx, NGX_LOG_DEBUG_HTTP, req->connection->log, 0, "CHRIS!!!"); // value.len: %zu, value.data: %V ", 
+		//value.len, value.data);
     if (name.len) {
       nullbytes = naxsi_unescape(&name);
       if (nullbytes > 0) {
