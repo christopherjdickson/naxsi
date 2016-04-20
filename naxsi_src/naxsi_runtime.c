@@ -1211,6 +1211,7 @@ ngx_http_spliturl_ruleset(ngx_pool_t *pool,
 		    "XX-url has no '=' but has '&' [%s]", str);
 
 
+      naxsi__debug_whitelist("CHRIS %d", __LINE__);
       ngx_http_apply_rulematch_v_n(&nx_int__uncommon_url, ctx, req, NULL, NULL, zone, 1, 0);
       if (ev > str) /* ?var& | ?var&val */ {
 	val.data = (unsigned char *) str;
@@ -1236,6 +1237,7 @@ ngx_http_spliturl_ruleset(ngx_pool_t *pool,
       len = ev - str;
       eq = strnchr(str, '=', len);
       if (!eq) {
+        naxsi__debug_whitelist("CHRIS %d", __LINE__);
 	if (ngx_http_apply_rulematch_v_n(&nx_int__uncommon_url, ctx, req, NULL, NULL, zone, 1, 0)) {
 	  dummy_error_fatal(ctx, req, 
 			    "malformed url, possible attack [%s]", str);
@@ -1257,12 +1259,14 @@ ngx_http_spliturl_ruleset(ngx_pool_t *pool,
       nullbytes = naxsi_unescape(&name);
       if (nullbytes > 0) {
         naxsi__debug_whitelist("CHRIS 1");
+        naxsi__debug_whitelist("CHRIS %d", __LINE__);
 	ngx_http_apply_rulematch_v_n(&nx_int__uncommon_hex_encoding, ctx, req, &name, &val, zone, 1, 1);
       }
     }
     if (val.len) {
       nullbytes = naxsi_unescape(&val);
       if (nullbytes > 0) {
+        naxsi__debug_whitelist("CHRIS %d", __LINE__);
 	ngx_http_apply_rulematch_v_n(&nx_int__uncommon_hex_encoding, ctx, req, &name, &val, zone, 1, 0);
       }
     }
@@ -1322,6 +1326,7 @@ void ngx_http_libinjection(ngx_pool_t *pool,
     issqli = libinjection_is_sqli(&state);
     if (issqli == 1) { 
       naxsi__debug_whitelist("CHRIS 2");
+        naxsi__debug_whitelist("CHRIS %d", __LINE__);
       ngx_http_apply_rulematch_v_n(nx_int__libinject_sql, ctx, req, name, value, zone, 1, 1);
     }
     
@@ -1329,6 +1334,7 @@ void ngx_http_libinjection(ngx_pool_t *pool,
     libinjection_sqli_init(&state, (const char *)value->data, value->len, FLAG_NONE);
     issqli = libinjection_is_sqli(&state);
     if (issqli == 1) {
+        naxsi__debug_whitelist("CHRIS %d", __LINE__);
       ngx_http_apply_rulematch_v_n(nx_int__libinject_sql, ctx, req, name, value, zone, 1, 0);	    
     }
   }
@@ -1338,12 +1344,14 @@ void ngx_http_libinjection(ngx_pool_t *pool,
     issqli = libinjection_xss((const char *) name->data, name->len);
     if (issqli == 1) {
       naxsi__debug_whitelist("CHRIS 3");
+        naxsi__debug_whitelist("CHRIS %d", __LINE__);
       ngx_http_apply_rulematch_v_n(nx_int__libinject_xss, ctx, req, name, value, zone, 1, 1);
     }
     
     /* hardcoded call to libinjection on CONTENT, apply internal rule if matched. */
     issqli = libinjection_xss((const char *) value->data, value->len);
     if (issqli == 1) {
+        naxsi__debug_whitelist("CHRIS %d", __LINE__);
       ngx_http_apply_rulematch_v_n(nx_int__libinject_xss, ctx, req, name, value, zone, 1, 0);	    
     }
   }
@@ -1412,6 +1420,7 @@ ngx_http_basestr_ruleset_n(ngx_pool_t *pool,
 	    NX_DEBUG(_debug_basestr_ruleset, NGX_LOG_DEBUG_HTTP, req->connection->log, 0, 
 		     "XX-apply rulematch [%V]=[%V] [rule=%d] (match %d times)", name, value, r[i].rule_id, nb_match); 
 	    
+            naxsi__debug_whitelist("CHRIS %d", __LINE__);
 	    ngx_http_apply_rulematch_v_n(&(r[i]), ctx, req, name, value, zone, nb_match, 0);	    
 	  }
 	  
@@ -1424,6 +1433,7 @@ ngx_http_basestr_ruleset_n(ngx_pool_t *pool,
 			    "XX-apply rulematch[in name] [%V]=[%V] [rule=%d] (match %d times)", name, value, r[i].rule_id, nb_match); 
 
 	      naxsi__debug_whitelist("CHRIS 4");
+              naxsi__debug_whitelist("CHRIS %d", __LINE__);
               ngx_http_apply_rulematch_v_n(&(r[i]), ctx, req, name, name, zone, nb_match, 1);
 	    }
 	  }
@@ -1458,6 +1468,7 @@ ngx_http_basestr_ruleset_n(ngx_pool_t *pool,
 	NX_DEBUG(_debug_basestr_ruleset, 	NGX_LOG_DEBUG_HTTP, req->connection->log, 0, 
 		      "XX-apply rulematch!1 [%V]=[%V] [rule=%d] (%d times)", name, value, r[i].rule_id, nb_match); 
 
+        naxsi__debug_whitelist("CHRIS %d", __LINE__);
 	ngx_http_apply_rulematch_v_n(&(r[i]), ctx, req, name, value, zone, nb_match, 0);
       }
     
@@ -1472,6 +1483,7 @@ ngx_http_basestr_ruleset_n(ngx_pool_t *pool,
 	  NX_DEBUG(_debug_basestr_ruleset, 	  NGX_LOG_DEBUG_HTTP, req->connection->log, 0, 
 			"XX-apply rulematch!1 [%V]=[%V] [rule=%d] (%d times)", name, value, r[i].rule_id, nb_match); 
 
+          naxsi__debug_whitelist("CHRIS %d", __LINE__);
 	  ngx_http_apply_rulematch_v_n(&(r[i]), ctx, req, name, value, zone, nb_match, 1);
 	}
       }
@@ -1632,6 +1644,7 @@ ngx_http_dummy_multipart_parse(ngx_http_request_ctx_t *ctx,
     if (boundary && boundary_len > 1)
       NX_DEBUG(_debug_post_heavy, NGX_LOG_DEBUG_HTTP, r->connection->log, 0, 
 	       "XX-POST boundary : (%s) : %d", boundary, boundary_len);
+    naxsi__debug_whitelist("CHRIS %d", __LINE__);
     ngx_http_apply_rulematch_v_n(&nx_int__uncommon_post_boundary, ctx, r, NULL, NULL, BODY, 1, 0);
     return ;
   }
@@ -1655,6 +1668,7 @@ ngx_http_dummy_multipart_parse(ngx_http_request_ctx_t *ctx,
 	  ngx_strncmp(src+idx+2, boundary, boundary_len) ||
 	  ngx_strncmp(src+idx+boundary_len+2, "--", 2)) {
 	/* bad closing boundary ?*/
+        naxsi__debug_whitelist("CHRIS %d", __LINE__);
 	ngx_http_apply_rulematch_v_n(&nx_int__uncommon_post_boundary, ctx, r, NULL, NULL, BODY, 1, 0);
 	return ;
       } else
@@ -1670,6 +1684,7 @@ ngx_http_dummy_multipart_parse(ngx_http_request_ctx_t *ctx,
 	/* and if it's followed by \r\n */
 	src[idx+boundary_len+2] != '\r' || src[idx+boundary_len+3] != '\n') {
       /* bad boundary */
+      naxsi__debug_whitelist("CHRIS %d", __LINE__);
       ngx_http_apply_rulematch_v_n(&nx_int__uncommon_post_boundary, ctx, r, NULL, NULL, BODY, 1, 0);
       return ;
     }
@@ -1688,6 +1703,8 @@ ngx_http_dummy_multipart_parse(ngx_http_request_ctx_t *ctx,
 			(u_char *) "content-disposition: form-data;", 31)) {
       ngx_log_debug(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, 
 		    "Unknown content-type: [%s]", src+idx);
+
+       naxsi__debug_whitelist("CHRIS %d", __LINE__);
       if (ngx_http_apply_rulematch_v_n(&nx_int__uncommon_post_format, ctx, r, NULL, NULL, BODY, 1, 0)) {
 	dummy_error_fatal(ctx, r, "POST data : unknown content-disposition");
       }
@@ -1696,6 +1713,7 @@ ngx_http_dummy_multipart_parse(ngx_http_request_ctx_t *ctx,
     idx += 31;
     line_end = (u_char *) ngx_strchr(src+idx, '\n');
     if (!line_end) {
+        naxsi__debug_whitelist("CHRIS %d", __LINE__);
       if (ngx_http_apply_rulematch_v_n(&nx_int__uncommon_post_format, ctx, r, NULL, NULL, BODY, 1, 0)) {
 	dummy_error_fatal(ctx, r, "POST data : malformed boundary line");
       }
@@ -1705,11 +1723,13 @@ ngx_http_dummy_multipart_parse(ngx_http_request_ctx_t *ctx,
     varn_start = varn_end = filen_start = filen_end = NULL;
     if (nx_content_disposition_parse(src+idx, line_end, &varn_start, &varn_end,
 				     &filen_start, &filen_end, r) != NGX_OK) {
+        naxsi__debug_whitelist("CHRIS %d", __LINE__);
       ngx_http_apply_rulematch_v_n(&nx_int__uncommon_post_format, ctx, r, NULL, NULL, BODY, 1, 0);
       return ;
     }
     /* var name is mandatory */
     if (!varn_start || !varn_end || varn_end <= varn_start) {
+        naxsi__debug_whitelist("CHRIS %d", __LINE__);
       if (ngx_http_apply_rulematch_v_n(&nx_int__uncommon_post_format, ctx, r, NULL, NULL, BODY, 1, 0)) {
 	dummy_error_fatal(ctx, r, "POST data : no 'name' in POST var");
       }
@@ -1721,6 +1741,7 @@ ngx_http_dummy_multipart_parse(ngx_http_request_ctx_t *ctx,
     if (filen_start && filen_end) {
       line_end = (u_char *) ngx_strchr(line_end+1, '\n');
       if (!line_end) {
+        naxsi__debug_whitelist("CHRIS %d", __LINE__);
 	if (ngx_http_apply_rulematch_v_n(&nx_int__uncommon_post_format, ctx, r, NULL, NULL, BODY, 1, 0)) {
 	  dummy_error_fatal(ctx, r, "POST data : malformed filename (no content-type ?)");
 	}
@@ -1734,6 +1755,7 @@ ngx_http_dummy_multipart_parse(ngx_http_request_ctx_t *ctx,
     */
     idx += (u_char *)line_end - (src+idx) + 1;
     if (src[idx] != '\r' || src[idx+1] != '\n') {
+        naxsi__debug_whitelist("CHRIS %d", __LINE__);
       if (ngx_http_apply_rulematch_v_n(&nx_int__uncommon_post_format, ctx, r, NULL, NULL, BODY, 1, 0)) {
 	dummy_error_fatal(ctx, r, "POST data : malformed content-disposition line");
       }
@@ -1755,6 +1777,7 @@ ngx_http_dummy_multipart_parse(ngx_http_request_ctx_t *ctx,
 	  break;
       }
       if (!end) {
+        naxsi__debug_whitelist("CHRIS %d", __LINE__);
 	if (ngx_http_apply_rulematch_v_n(&nx_int__uncommon_post_format, ctx, r, NULL, NULL, BODY, 1, 0)) {
 	  dummy_error_fatal(ctx, r, "POST data : malformed content-disposition line");
 	}
@@ -1778,10 +1801,12 @@ ngx_http_dummy_multipart_parse(ngx_http_request_ctx_t *ctx,
       final_data.len = filen_end - filen_start;
       nullbytes = naxsi_unescape(&final_var);
       if (nullbytes > 0) {
+        naxsi__debug_whitelist("CHRIS %d", __LINE__);
 	ngx_http_apply_rulematch_v_n(&nx_int__uncommon_hex_encoding, ctx, r, &final_var, &final_data, BODY, 1, 1);
       }
       nullbytes = naxsi_unescape(&final_data);
       if (nullbytes > 0) {
+        naxsi__debug_whitelist("CHRIS %d", __LINE__);
 	ngx_http_apply_rulematch_v_n(&nx_int__uncommon_hex_encoding, ctx, r, &final_var, &final_data, BODY, 1, 0);
       }
       
@@ -1821,10 +1846,12 @@ ngx_http_dummy_multipart_parse(ngx_http_request_ctx_t *ctx,
 	final_data.len = varc_len;
 	nullbytes = naxsi_unescape(&final_var);
 	if (nullbytes > 0) {
+        naxsi__debug_whitelist("CHRIS %d", __LINE__);
 	  ngx_http_apply_rulematch_v_n(&nx_int__uncommon_hex_encoding, ctx, r, &final_var, &final_data, BODY, 1, 1);
 	}
 	nullbytes = naxsi_unescape(&final_data);
 	if (nullbytes > 0) {
+        naxsi__debug_whitelist("CHRIS %d", __LINE__);
 	  ngx_http_apply_rulematch_v_n(&nx_int__uncommon_hex_encoding, ctx, r, &final_var, &final_data, BODY, 1, 0);
 	}
 	
@@ -1884,6 +1911,7 @@ ngx_http_dummy_body_parse(ngx_http_request_ctx_t *ctx,
 
 
   if (!r->request_body->bufs) {
+        naxsi__debug_whitelist("CHRIS %d", __LINE__);
     ngx_http_apply_rulematch_v_n(&nx_int__empty_post_body, ctx, r, NULL, NULL, BODY, 1, 0);
     return ;
   }
@@ -1891,6 +1919,7 @@ ngx_http_dummy_body_parse(ngx_http_request_ctx_t *ctx,
     NX_DEBUG(_debug_body_parse,   NGX_LOG_DEBUG_HTTP, r->connection->log, 0, 
 	     "XX-No content type ..");
     
+        naxsi__debug_whitelist("CHRIS %d", __LINE__);
     ngx_http_apply_rulematch_v_n(&nx_int__uncommon_content_type, ctx, r, NULL, NULL, BODY, 1, 0);
     return ;
   }
@@ -1898,6 +1927,7 @@ ngx_http_dummy_body_parse(ngx_http_request_ctx_t *ctx,
   if (r->request_body->temp_file) {
     ngx_log_debug(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, 
 		  "naxsi: POST REQUEST to temp_file, partially parsed.");
+        naxsi__debug_whitelist("CHRIS %d", __LINE__);
     ngx_http_apply_rulematch_v_n(&nx_int__big_request, ctx, r, NULL, NULL, BODY, 1, 0);
     return ;
   }
@@ -1941,6 +1971,7 @@ ngx_http_dummy_body_parse(ngx_http_request_ctx_t *ctx,
   
   /* File probably got buffered. */
   if (r->headers_in.content_length_n != full_body_len) {
+        naxsi__debug_whitelist("CHRIS %d", __LINE__);
     ngx_http_apply_rulematch_v_n(&nx_int__big_request, ctx, r, NULL, NULL, BODY, 1, 0);
     return ;
   }
@@ -1961,6 +1992,7 @@ ngx_http_dummy_body_parse(ngx_http_request_ctx_t *ctx,
     if(ngx_http_spliturl_ruleset(r->pool, (char *)tmp.data, 
 				 cf->body_rules, main_cf->body_rules, 
 				 r, ctx, BODY)) {
+        naxsi__debug_whitelist("CHRIS %d", __LINE__);
       ngx_http_apply_rulematch_v_n(&nx_int__uncommon_url, ctx, r, NULL, NULL, BODY, 1, 0);
       return ;
     } 
@@ -1978,6 +2010,7 @@ ngx_http_dummy_body_parse(ngx_http_request_ctx_t *ctx,
   else {
     ngx_log_debug(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, 
 		  "[POST] Unknown content-type");
+        naxsi__debug_whitelist("CHRIS %d", __LINE__);
     ngx_http_apply_rulematch_v_n(&nx_int__uncommon_content_type, ctx, r, NULL, NULL, BODY, 1, 0);
     /*
     ** Only attempt to process "raw" body if id:nx_int__uncommon_content_type was
