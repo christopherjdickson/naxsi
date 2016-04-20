@@ -364,6 +364,7 @@ nx_find_wl_in_hash(ngx_str_t *mstr,
     b = (ngx_http_whitelist_rule_t*) ngx_hash_find(cf->wlr_args_hash, k, 
 						   (u_char*) mstr->data, 
 						   mstr->len);
+  naxsi__debug_whitelist("\n\nzone: %d\ntarget_name: %d\nname: %V\n", b->zone, b->target_name, b->name);
   return (b);
 }
 
